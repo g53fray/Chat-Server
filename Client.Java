@@ -14,7 +14,9 @@ public class Client  {
 
 	// Constructor called by console
 	Client(String server, int port, String username) {
-		this(server, port, username);
+		this.server = server;
+		this.port = port;
+		this.username = username;
 	}
 
 }
