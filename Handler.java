@@ -10,9 +10,12 @@ public class Handler implements Serializable {
 	protected static final long serialVersionUID = 1112122200L;
 
 	// The different types of message sent by the Client
-	// WHOISIN to receive the list of the users connected
-	// MESSAGE an ordinary message
-	// LOGOUT to disconnect from the Server
+	// STAT: To receive the number of the users connected
+	// MESSAGE: A message
+	// QUIT: To disconnect from the Server
+	// IDEN: If user is logged in
+	// LIST: To receive the list of the users connected
+	// HAIL: If another user has logged in
 	static final int STAT = 0, MESSAGE = 1, QUIT = 2,  IDEN = 3, LIST = 4, HAIL = 5;
 	private int type;
 	private String message;
