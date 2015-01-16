@@ -73,6 +73,76 @@ public class Server {
             String msg = sdf.format(new Date()) + " Exception on new ServerSocket: " + e + "\n";
 			display(msg);
 		}
-	}		
+	}
+	/*
+	 * Display an event (not a message) to the console or the GUI
+	 */
+	private void display(String msg) {
+		String time = sdf.format(new Date()) + " " + msg;
+		
+			System.out.println(time);
+		
+	}
+	/*
+	 *  to broadcast a message to all Clients
+	 */
+	private synchronized void broadcast(String message) {
+		// add HH:mm:ss and \n to the message
+		String time = sdf.format(new Date());
+		String messageLf = time + " " + message + "\n";
+		// display message on console or GUI
+		
+			System.out.print(messageLf);
+		
+		
+		// we loop in reverse order in case we would have to remove a Client
+		// because it has disconnected
+		for(int i = al.size(); --i >= 0;) {
+			ClientThread ct = al.get(i);
+			// try to write to the Client if it fails remove it from the list
+			if(!ct.writeMsg(messageLf)) {
+				al.remove(i);
+				display("Disconnected Client " + ct.username + " removed from list.");
+			}
+		}
+	}
+
+	// for a client who logoff using the LOGOUT message
+	synchronized void remove(int id) {
+		// scan the array list until we found the Id
+		for(int i = 0; i < al.size(); ++i) {
+			ClientThread ct = al.get(i);
+			// found it
+			if(ct.id == id) {
+				al.remove(i);
+				return;
+			}
+		}
+	}
+	
+	public static void main(String[] args) {
+		// start server on port 1500 unless a PortNumber is specified 
+		int portNumber = 1500;
+		switch(args.length) {
+			case 1:
+				try {
+					portNumber = Integer.parseInt(args[0]);
+				}
+				catch(Exception e) {
+					System.out.println("Invalid port number.");
+					System.out.println("Usage is: > java Server [portNumber]");
+					return;
+				}
+			case 0:
+				break;
+			default:
+				System.out.println("Usage is: > java Server [portNumber]");
+				return;
+				
+		}
+		// create a server object and start it
+		Server server = new Server(portNumber);
+		server.start();
+	}
 }
 
