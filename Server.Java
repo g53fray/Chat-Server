@@ -144,5 +144,47 @@ public class Server {
 		Server server = new Server(portNumber);
 		server.start();
 	}
+	class ClientThread extends Thread {
+		// the socket where to listen/talk
+		Socket socket;
+		ObjectInputStream sInput;
+		ObjectOutputStream sOutput;
+		// my unique id (easier for deconnection)
+		int id;
+		// the Username of the Client
+		String username;
+		// the only type of message a will receive
+		Handler cm;
+		// the date I connect
+		String date;
+                
+                boolean loggedIn = false;
+
+		// Constructore
+		ClientThread(Socket socket) {
+			// a unique id
+			id = ++uniqueId;
+			this.socket = socket;
+			/* Creating both Data Stream */
+			System.out.println("Thread trying to create Object Input/Output Streams");
+			try
+			{
+				// create output first
+				sOutput = new ObjectOutputStream(socket.getOutputStream());
+				sInput  = new ObjectInputStream(socket.getInputStream());
+				// read the username
+				username = (String) sInput.readObject();
+				display(username + " just connected.");
+			}
+			catch (IOException e) {
+				display("Exception creating new Input/output Streams: " + e);
+				return;
+			}
+			// have to catch ClassNotFoundException
+			// but I read a String, I am sure it will work
+			catch (ClassNotFoundException e) {
+			}
+            date = new Date().toString() + "\n";
+		}
 }
 
