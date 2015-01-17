@@ -186,5 +186,113 @@ public class Server {
 			}
             date = new Date().toString() + "\n";
 		}
+		// what will run forever
+		public void run() {
+			// Loop until QUIT
+			boolean keepGoing = true;
+			while(keepGoing) {
+				// read a String (which is an object)
+				try {
+					cm = (Handler) sInput.readObject();
+				}
+				catch (IOException e) {
+					display(username + " Exception reading Streams: " + e);
+					break;				
+				}
+				catch(ClassNotFoundException e2) {
+					break;
+				}
+
+				// Switch on the type of message receive
+				switch(cm.getType()) {
+
+				case Handler.MESSAGE:
+					if(loggedIn){	
+						boolean exists = false;
+						for(ClientThread thread : al){
+							if(thread.username.equalsIgnoreCase(cm.getParam())){
+								if(thread.writeMsg(username + ": " + cm.getMessage())){
+									writeMsg("Message sent.");
+									exists = true;
+									break;
+								}
+							}
+						}
+						if(!exists)
+							writeMsg("User: " + cm.getParam() + " does not exist.");
+					}
+					else{
+						writeMsg("Error! User not logged in");
+					}
+					break;
+					
+				case Handler.QUIT:
+					writeMsg(username + " disconnected.");
+					keepGoing = false;
+					break;
+					
+				case Handler.STAT:
+					writeMsg("There are " + al.size() + " users currently logged in.\n");
+					writeMsg("Current session status: ");
+					if(loggedIn){
+						writeMsg("Logged in since " + this.date);
+					}
+					else{
+						writeMsg("Not logged in");
+					}
+					break;
+					
+				case Handler.LIST:
+					if(loggedIn){
+						writeMsg("List of the users connected at " + sdf.format(new Date()) + "\n");
+						// scan all the users connected
+						for(int i = 0; i < al.size(); ++i) {
+							ClientThread ct = al.get(i);
+							writeMsg((i+1) + ") " + ct.username + " since " + ct.date + "\n");
+						}	
+					}
+					else{
+						writeMsg("Error! User not logged in");
+					}
+					break;
+					
+				case Handler.IDEN:
+					if(loggedIn){
+						writeMsg("Already logged in");
+						break;
+					}
+					boolean usernameExists = false;
+					for(int i = 0; i < al.size(); ++i) {
+						ClientThread ct = al.get(i);
+						if(cm.getParam().equals(ct.username))
+							usernameExists = true;
+					}
+					if(usernameExists){
+						writeMsg("Error! User " + cm.getParam() + " already exists. Please try another Username.");
+						al.remove(al.size() - 1);
+					}
+					else{
+						this.loggedIn = true;
+						this.username = cm.getParam();
+						writeMsg("Welcome " + username);
+						date = new Date().toString() + "\n";
+					}
+					break;
+					
+				case Handler.HAIL:
+					if(loggedIn){
+						broadcast(username + ": " + cm.getMessage());
+					}
+					else{
+						writeMsg("Error! User not logged in.");
+					}
+				}
+					
+			}
+			// remove client from the arrayList containing the list of the
+			// connected Clients
+			close();
+		}
+		
 }
 
