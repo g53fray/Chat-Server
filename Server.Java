@@ -293,6 +293,50 @@ public class Server {
 			// connected Clients
 			close();
 		}
+			
+			// remove myself from the arrayList containing the list of the
+			// connected Clients
+			
+		
+		
+		// try to close everything
+		private void close() {
+			// try to close the connection
+			try {
+				if(sOutput != null) sOutput.close();
+			}
+			catch(Exception e) {}
+			try {
+				if(sInput != null) sInput.close();
+			}
+			catch(Exception e) {};
+			try {
+				if(socket != null) socket.close();
+			}
+			catch (Exception e) {}
+		}
+
+		/*
+		 * Write a String to the Client output stream
+		 */
+		private boolean writeMsg(String msg) {
+			// if Client is still connected send the message to it
+			if(!socket.isConnected()) {
+				close();
+				return false;
+			}
+			// write the message to the stream
+			try {
+				sOutput.writeObject(msg);
+			}
+			// if an error occurs, do not abort just inform the user
+			catch(IOException e) {
+				display("Error sending message to " + username);
+				display(e.toString());
+			}
+			return true;
+		}
+	}
 		
 }
 
