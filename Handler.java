@@ -16,7 +16,7 @@ public class Handler implements Serializable {
 	// IDEN: If user is logged in
 	// LIST: To receive the list of the users connected
 	// HAIL: If another user has logged in
-	static final int STAT = 0, MESSAGE = 1, QUIT = 2,  IDEN = 3, LIST = 4, HAIL = 5;
+	static final int STAT = 0, MESG = 1, QUIT = 2,  IDEN = 3, LIST = 4, HAIL = 5;
 	private int type;
 	private String message;
 	private String user;
