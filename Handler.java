@@ -11,7 +11,7 @@ public class Handler implements Serializable {
 
 	// The different types of message sent by the Client
 	// STAT: To receive the number of the users connected
-	// MESSAGE: A message
+	// MESG: Send a message to a specific user
 	// QUIT: To disconnect from the Server
 	// IDEN: If user is logged in
 	// LIST: To receive the list of the users connected
