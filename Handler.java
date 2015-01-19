@@ -19,11 +19,12 @@ public class Handler implements Serializable {
 	static final int STAT = 0, MESSAGE = 1, QUIT = 2,  IDEN = 3, LIST = 4, HAIL = 5;
 	private int type;
 	private String message;
-	private String param;
+	private String user;
 	// constructor
-	public Handler(int type, String param, String message) {
-		this.type = type;
-		this.param = param;
+	public Handler(int type, String user, String message) {
+           
+        this.type = type;
+        this.user = user;
 		this.message = message;
 	}
 	
@@ -31,9 +32,11 @@ public class Handler implements Serializable {
 	int getType() {
 		return type;
 	}
-        public String getParam(){
-		return param;
-	}
+    
+    String getUser() {
+        return user;
+        }
+        
 	String getMessage() {
 		return message;
 	}
